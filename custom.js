@@ -38,14 +38,31 @@ function getLength() {
 }
 
 
+// Ensure that some characters have been selected for generation.
+function checkTypes(aTypes, aCheckboxes) {
+    // Check if any checkboxes have been selected. If not, below expression equals 0.
+    if (aTypes[0] + aTypes[1] + aTypes[2] + aTypes[3] == 0) {
+        for (var i = 0; i < 4; i++) {
+            aTypes[i] = true;
+            document.getElementById(aCheckboxes[i]).checked = true;
+        } 
+    }
+    return aTypes;
+}
+
+
 function getTypes() {
     var types = new Array(6);
     const checkboxes = ["lowercase","uppercase","numbers","symbols","symbol_at","symbol_dot"];
 
-    for (var i = 0; i < types.length; i++) {
+    for (var i = 0; i < types.length; i++)
         types[i] = document.getElementById(checkboxes[i]).checked;
+
+    types = checkTypes(types, checkboxes);
+
+    for (var i = 0; i < types.length; i++)
         console.info(checkboxes[i] + ": " + types[i]); // e.g. "lowercase: true".
-    }
+
     return types;
 }
 
@@ -53,8 +70,6 @@ function getTypes() {
 function validate() {
     const length = getLength();
     const types = getTypes();
-
-    // Check for when all checkboxes are unselected, and select something by default.
 
     document.getElementById("result").innerHTML = "Hi.";
     //document.getElementById("result").style.color = 'red'; // Changes text to red.

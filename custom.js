@@ -61,6 +61,49 @@ function fixTypes(aTypes, aCheckboxes) {
 }
 
 
+// Generate a random lowercase letter.
+function generateLetter() {
+    const alphabet = "abcdefghijklmnopqrstuvwxyz";
+    const letter = alphabet[Math.floor(Math.random() * alphabet.length)];
+    return letter;
+}
+
+
+// Generate a random symbol. Special @ and . consideration NOT implemented yet.
+function generateSymbol() {
+    const symbolList = "~!#$%^&*()_-+={[}]|:;<,>?/";
+    const symbol = symbolList[Math.floor(Math.random() * symbolList.length)];
+    return symbol;
+}
+
+
+// Math.floor(Math.random() * 10);  ==  0 to 9.
+function generatePassword(aLength, aTypes, aVariety) {
+    var password = "";
+    for (var i = 0; i < aLength; i++) {
+        const type = Math.floor(Math.random() * aVariety) + 1; // 1 to aVariety, e.g. 1 to 3.
+        
+        var character = "";
+        switch (type) {
+            case 1: // lowercase
+                character = generateLetter();
+                break; 
+            case 2: // UPPERCASE
+                character = generateLetter().toUpperCase();
+                break;
+            case 3: // numb3rs
+                character = Math.floor(Math.random() * 10).toString();
+                break;
+            case 4: // $ymbol$
+                character = generateSymbol();
+                break;
+        }
+        password += character;
+    }
+    return password;
+}
+
+
 function validate() {
     const checkboxes = ["lowercase","uppercase","numbers","symbols","symbol_at","symbol_dot"];
     const length = getLength();
@@ -74,13 +117,19 @@ function validate() {
         types = fixTypes(types, checkboxes);
     }
     
+    const password = generatePassword(length, types, variety);
+
+    // Delete logs when done.
+    // Clicking on labels should activate their companions.
+    // Typing in the otherLength textbox should click its RadioButton.
+
 
     for (var i = 0; i < types.length; i++)
         console.info(checkboxes[i] + ": " + types[i]); // e.g. "lowercase: true".
     
     console.log("Variety: " + variety);
 
-    document.getElementById("result").innerHTML = "Hi.";
+    document.getElementById("result").innerHTML = password;
     //document.getElementById("result").style.color = 'red'; // Changes text to red.
 }
 

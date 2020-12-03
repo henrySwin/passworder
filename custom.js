@@ -1,4 +1,4 @@
-"use strict";
+"use strict"; // Enable strict mode.
 
 
 function smartSymbols() {
@@ -85,26 +85,35 @@ function generateSymbol(aTypes) {
 // Math.floor(Math.random() * 10);  ==  0 to 9.
 function generatePassword(aLength, aTypes, aVariety) {
     var password = "";
+    var stats = [0, 0, 0, 0];
     for (var i = 0; i < aLength; i++) {
         const type = Math.floor(Math.random() * aVariety) + 1; // 1 to aVariety, e.g. 1 to 3.
         
         var character = "";
         switch (type) {
             case 1: // lowercase
+                stats[0] += 1;
                 character = generateLetter();
                 break; 
             case 2: // UPPERCASE
+                stats[1] += 1;
                 character = generateLetter().toUpperCase();
                 break;
             case 3: // numb3rs
+                stats[2] += 1;
                 character = Math.floor(Math.random() * 10).toString();
                 break;
             case 4: // $ymbol$
+                stats[3] += 1;
                 character = generateSymbol(aTypes);
                 break;
         }
         password += character;
     }
+    // Log the frequency of each character type.
+    console.log("Password stats: " +
+    "lowercase: " + stats[0].toString() + ", UPPERCASE: " + stats[1].toString() +
+    ", numb3rs: " + stats[2].toString() +   ", $ymbol$: " + stats[3].toString());
     return password;
 }
 

@@ -26,26 +26,19 @@ function getLength() {
     else if (document.getElementById("20Length").checked) { length = 20; }
     else if (document.getElementById("32Length").checked) { length = 32; }
     else if (document.getElementById("otherLength").checked) {
-        if (document.getElementById("inputOtherLength").value <= 0) {
-            length = 32;
-            document.getElementById("inputOtherLength").value = 32;
-        }
-        else { length = document.getElementById("inputOtherLength").value; }
+        length = document.getElementById("inputOtherLength").value;
     }
-    else { console.error("getLength() error."); }
 
+    // Ensure that a length greater than 0 has been inputted by user.
+    if (document.getElementById("inputOtherLength").value <= 0) {
+        length = 32;
+        document.getElementById("inputOtherLength").value ="";
+        document.getElementById("otherLength").checked = false;
+        document.getElementById("32Length").checked = true;
+    }
+    
     console.info("Length: " + length); // e.g. "Length: 32".
     return length;
-}
-
-
-function getTypes(aCheckboxes) {
-    var types = new Array(6);
-
-    for (var i = 0; i < types.length; i++)
-        types[i] = document.getElementById(aCheckboxes[i]).checked;
-
-    return types;
 }
 
 
@@ -73,10 +66,12 @@ function generateLetter() {
 // Generate a random symbol.
 function generateSymbol(aTypes) {
     // Assemble the list of symbols the user selected.
-    var symbolList = "~!#$%^&*()_-+={[}]|:;<,>?/";  // Default list.
-    if (aTypes[4]) { symbolList += "@"; }           // @
-    if (aTypes[5]) { symbolList += "."; }           // .
+    // ` @ \ " ' < > . are not included in the default list.
+    var symbolList = "~!#$%^&*()_-+={[}]|:;,?/";
+    if (aTypes[4]) { symbolList += "@"; } // Include @
+    if (aTypes[5]) { symbolList += "."; } // Include .
 
+    // Choose a random symbol from the assembled list.
     const symbol = symbolList[Math.floor(Math.random() * symbolList.length)];
     return symbol;
 }
@@ -94,15 +89,18 @@ function generatePassword(aLength, aTypes, aVariety) {
             case 1: // lowercase
                 stats[0] += 1;
                 character = generateLetter();
-                break; 
+                break;
+            
             case 2: // UPPERCASE
                 stats[1] += 1;
                 character = generateLetter().toUpperCase();
                 break;
+
             case 3: // numb3rs
                 stats[2] += 1;
                 character = Math.floor(Math.random() * 10).toString();
                 break;
+
             case 4: // $ymbol$
                 stats[3] += 1;
                 character = generateSymbol(aTypes);
@@ -119,9 +117,18 @@ function generatePassword(aLength, aTypes, aVariety) {
 
 
 function main() {
-    const checkboxes = ["lowercase","uppercase","numbers","symbols","symbol_at","symbol_dot"];
+    // Clear the console (removes information from previous password).
+    console.clear();
+    
+    const checkboxes = ["lowercase","uppercase",
+    "numbers","symbols","symbol_at","symbol_dot"];
+    
     const length = getLength();
-    var types = getTypes(checkboxes);
+    
+    var types = new Array(6);
+    for (var i = 0; i < types.length; i++)
+        types[i] = document.getElementById(checkboxes[i]).checked;
+
     var variety = types[0] + types[1] + types[2] + types[3];
 
     // Ensure that some characters have been selected for generation.
@@ -132,6 +139,7 @@ function main() {
     }
     
     const password = generatePassword(length, types, variety);
+    console.log("Password: " + password);
 
     // Delete logs when done.
 
@@ -141,15 +149,16 @@ function main() {
     
     console.log("Variety: " + variety);
 
-    document.getElementById("result").innerHTML = password;
+    // Display the password in the <p> tag.
+    document.getElementById("result").innerHTML = password.toString();
     //document.getElementById("result").style.color = 'red'; // Changes text to red.
 }
 
 
 /* This function is called when the webpage loads. */
 window.onload = function() {
-    // If a length is manually inputted into the "other:" TextBox, select its RadioButton.
-    document.getElementById("inputOtherLength").addEventListener('change', function() {
+    // If the "other:" TextBox is clicked, select its RadioButton.
+    document.getElementById("inputOtherLength").addEventListener('click', function() {
         document.getElementById("otherLength").checked = true;
     });
 

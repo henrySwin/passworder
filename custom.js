@@ -1,14 +1,15 @@
 "use strict";
 
+
 function smartSymbols() {
     const at = document.getElementById("symbol_at");
     const dot = document.getElementById("symbol_dot");
 
-    if (this.checked) { // Enable @ and . checkboxes.
+    if (this.checked) { // Enable @ and . CheckBoxes.
         at.disabled = false;
         dot.disabled = false;
     }
-    else { // Disable @ and . checkboxes, and uncheck them.
+    else { // Disable @ and . CheckBoxes, and uncheck them.
         at.disabled = true;
         dot.disabled = true;
 
@@ -49,7 +50,7 @@ function getTypes(aCheckboxes) {
 
 
 function fixTypes(aTypes, aCheckboxes) {
-    // Re-enable the @ and . checkboxes.
+    // Re-enable the @ and . CheckBoxes.
     document.getElementById("symbol_at").disabled = false;
     document.getElementById("symbol_dot").disabled = false;
 
@@ -108,14 +109,14 @@ function generatePassword(aLength, aTypes, aVariety) {
 }
 
 
-function validate() {
+function main() {
     const checkboxes = ["lowercase","uppercase","numbers","symbols","symbol_at","symbol_dot"];
     const length = getLength();
     var types = getTypes(checkboxes);
     var variety = types[0] + types[1] + types[2] + types[3];
 
     // Ensure that some characters have been selected for generation.
-    // If no checkboxes have been selected, variety == 0.
+    // If no CheckBoxes have been selected, variety == 0.
     if (variety == 0) {
         variety = 4;
         types = fixTypes(types, checkboxes);
@@ -124,8 +125,6 @@ function validate() {
     const password = generatePassword(length, types, variety);
 
     // Delete logs when done.
-    // Clicking on labels should activate their companions.
-    // Typing in the otherLength textbox should click its RadioButton.
 
 
     for (var i = 0; i < types.length; i++)
@@ -138,8 +137,16 @@ function validate() {
 }
 
 
+/* This function is called when the webpage loads. */
 window.onload = function() {
+    // If a length is manually inputted into the "other:" TextBox, select its RadioButton.
+    document.getElementById("inputOtherLength").addEventListener('change', function() {
+        document.getElementById("otherLength").checked = true;
+    });
+
+    // If the "$ymbol$" CheckBox is selected, call smartSymbols().
     document.getElementById("symbols").addEventListener('change', smartSymbols);
 
-    document.getElementById("generate").onclick = validate;
+    // If the "generate" Button is clicked, call main().
+    document.getElementById("generate").onclick = main;
 }

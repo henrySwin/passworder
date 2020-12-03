@@ -69,9 +69,13 @@ function generateLetter() {
 }
 
 
-// Generate a random symbol. Special @ and . consideration NOT implemented yet.
-function generateSymbol() {
-    const symbolList = "~!#$%^&*()_-+={[}]|:;<,>?/";
+// Generate a random symbol.
+function generateSymbol(aTypes) {
+    // Assemble the list of symbols the user selected.
+    var symbolList = "~!#$%^&*()_-+={[}]|:;<,>?/";  // Default list.
+    if (aTypes[4]) { symbolList += "@"; }           // @
+    if (aTypes[5]) { symbolList += "."; }           // .
+
     const symbol = symbolList[Math.floor(Math.random() * symbolList.length)];
     return symbol;
 }
@@ -95,7 +99,7 @@ function generatePassword(aLength, aTypes, aVariety) {
                 character = Math.floor(Math.random() * 10).toString();
                 break;
             case 4: // $ymbol$
-                character = generateSymbol();
+                character = generateSymbol(aTypes);
                 break;
         }
         password += character;

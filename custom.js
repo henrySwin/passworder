@@ -5,7 +5,8 @@ function smartSymbols() {
     const at = document.getElementById("symbol_at");
     const dot = document.getElementById("symbol_dot");
 
-    if (this.checked) { // Enable @ and . CheckBoxes.
+    if (document.getElementById("symbols").checked) {
+        // Enable @ and . CheckBoxes.
         at.disabled = false;
         dot.disabled = false;
     }
@@ -37,6 +38,7 @@ function getLength() {
         document.getElementById("32Length").checked = true;
     }
     
+    // Log the length of the password.
     console.info("Length: " + length); // e.g. "Length: 32".
     return length;
 }
@@ -52,6 +54,22 @@ function fixTypes(aTypes, aCheckboxes) {
         document.getElementById(aCheckboxes[i]).checked = true;
     }
     return aTypes;
+}
+
+
+function getTypes() {
+    var types = new Array(6);
+    const checkboxes = ["lowercase","uppercase",
+    "numbers","symbols","symbol_at","symbol_dot"];
+
+    for (var i = 0; i < types.length; i++)
+        types[i] = document.getElementById(checkboxes[i]).checked;
+
+    // Ensure that some characters have been selected for generation.
+    // If no CheckBoxes have been selected, expression === 0.
+    if (types[0] + types[1] + types[2] + types[3] === 0)
+        types = fixTypes(types, checkboxes);
+    return types;
 }
 
 
@@ -77,37 +95,39 @@ function generateSymbol(aTypes) {
 }
 
 
-// Math.floor(Math.random() * 10);  ==  0 to 9.
-function generatePassword(aLength, aTypes, aVariety) {
+/* Generate the password itself (a string). */
+function generatePassword(aLength, aTypes) {
     var password = "";
     var stats = [0, 0, 0, 0];
+
     for (var i = 0; i < aLength; i++) {
-        const type = Math.floor(Math.random() * aVariety) + 1; // 1 to aVariety, e.g. 1 to 3.
+        // Loop until a desired character type is chosen.
+        var type = 0;
+        do { type = Math.floor(Math.random() * 4); } // 0 to 3.
+        while (!aTypes[type]); // Checkbox was not selected (false).
         
+        stats[type] += 1; // Increment the stats array for the chosen type.
+
         var character = "";
         switch (type) {
-            case 1: // lowercase
-                stats[0] += 1;
+            case 0: // lowercase
                 character = generateLetter();
                 break;
-            
-            case 2: // UPPERCASE
-                stats[1] += 1;
+            case 1: // UPPERCASE
                 character = generateLetter().toUpperCase();
                 break;
-
-            case 3: // numb3rs
-                stats[2] += 1;
-                character = Math.floor(Math.random() * 10).toString();
+            case 2: // numb3rs
+                character = Math.floor(Math.random() * 10).toString(); // 0 to 9.
                 break;
-
-            case 4: // $ymbol$
-                stats[3] += 1;
+            case 3: // $ymbol$
                 character = generateSymbol(aTypes);
                 break;
-        }
+        }        
         password += character;
     }
+
+    // Log the password.
+    console.log("Password: " + password);
     // Log the frequency of each character type.
     console.log("Password stats: " +
     "lowercase: " + stats[0].toString() + ", UPPERCASE: " + stats[1].toString() +
@@ -117,38 +137,15 @@ function generatePassword(aLength, aTypes, aVariety) {
 
 
 function main() {
-    // Clear the console (removes information from previous password).
+    // Clear the console (removes logs from previous password).
     console.clear();
-    
-    const checkboxes = ["lowercase","uppercase",
-    "numbers","symbols","symbol_at","symbol_dot"];
-    
+
     const length = getLength();
     
-    var types = new Array(6);
-    for (var i = 0; i < types.length; i++)
-        types[i] = document.getElementById(checkboxes[i]).checked;
-
-    var variety = types[0] + types[1] + types[2] + types[3];
-
-    // Ensure that some characters have been selected for generation.
-    // If no CheckBoxes have been selected, variety == 0.
-    if (variety == 0) {
-        variety = 4;
-        types = fixTypes(types, checkboxes);
-    }
+    const types = getTypes();
     
-    const password = generatePassword(length, types, variety);
-    console.log("Password: " + password);
-
-    // Delete logs when done.
-
-
-    for (var i = 0; i < types.length; i++)
-        console.info(checkboxes[i] + ": " + types[i]); // e.g. "lowercase: true".
+    const password = generatePassword(length, types);
     
-    console.log("Variety: " + variety);
-
     // Display the password in the <p> tag.
     document.getElementById("result").innerHTML = password.toString();
     //document.getElementById("result").style.color = 'red'; // Changes text to red.
@@ -167,4 +164,4 @@ window.onload = function() {
 
     // If the "generate" Button is clicked, call main().
     document.getElementById("generate").onclick = main;
-}
+};

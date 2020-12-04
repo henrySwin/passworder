@@ -49,24 +49,3 @@ ul {
     border-radius: 8px;
     border: none;
 }
-
-
-/* Link has not been clicked. */
-a:link {
-    color: #FFFFFF;
-}
-
-/* Link has already been clicked. */
-a:visited {
-    color: #FFFFFF;
-}
-
-/* Currently hovering over link. */
-a:hover {
-    color: #00CC00;
-}
-
-/* Currently clicking link. */
-a:active {
-    color: #009900;
-}

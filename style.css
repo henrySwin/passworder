@@ -9,3 +9,47 @@ body {
 ul {
     list-style-type: none;
 }
+
+.TextBox {
+    border-radius: 8px;
+    border: none;
+}
+
+.button {
+    color: #000000;
+    background-color: #FFFFFF;
+    border: 2px solid #FFFFFF;
+    
+    font-size: 14px;
+    padding: 10px 14px;
+    cursor: pointer;
+    border-radius: 8px;
+}
+
+.button:hover {
+    background-color: #00FF00;
+}
+
+.button:active {
+    background-color: #00E600;
+}
+
+/* Link has not been clicked. */
+a:link {
+    color: #FFFFFF;
+}
+
+/* Link has already been clicked. */
+a:visited {
+    color: #FFFFFF;
+}
+
+/* Currently hovering over link. */
+a:hover {
+    color: #00CC00;
+}
+
+/* Currently clicking link. */
+a:active {
+    color: #00E600;
+}

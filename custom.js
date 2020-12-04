@@ -174,5 +174,13 @@ window.onload = function() {
         result.select();
         result.setSelectionRange(0, 99999)
         document.execCommand("copy");
+
+        var tooltip = document.getElementById("myTooltip");
+        tooltip.innerHTML = "copied!";
+    });
+
+    document.getElementById("clipboard").addEventListener("mouseout",
+    function() {
+        document.getElementById("myTooltip").innerHTML = "copy";
     });
 };

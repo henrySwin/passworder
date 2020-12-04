@@ -1,6 +1,6 @@
 body {
-    background-color: #16161d;
     color: #00FF00;
+    background-color: #16161d;
     
     font-family: 'Open Sans', sans-serif;
     padding-left: 20px;
@@ -13,8 +13,8 @@ ul {
 
 
 .TextBox {
-    border-radius: 8px;
     border: none;
+    border-radius: 8px;
     width: 75px;
 }
 
@@ -22,13 +22,14 @@ ul {
 .button {
     color: #000000;
     background-color: #FFFFFF;
+    
     border: none;
+    border-radius: 8px;
     
     font-size: 14px;
     padding: 10px 14px;
     margin-right: 16px;
     cursor: pointer;
-    border-radius: 8px;
 }
 
 /* Currently hovering over button. */
@@ -46,6 +47,47 @@ ul {
 .result {
     color: #000000;
     background-color: #FFFFFF;
-    border-radius: 8px;
+
     border: none;
+    border-radius: 8px;
+}
+
+.tooltip {
+    position: relative;
+    display: inline-block;
+}
+  
+.tooltip .tooltiptext {
+    color: #FFFFFF;
+    background-color: #555555;
+    
+    visibility: hidden;
+    width: 70px;
+    text-align: center;
+    border-radius: 8px;
+    padding: 6px;
+    position: absolute;
+    z-index: 1;
+    bottom: 150%;
+    left: 50%;
+    margin-left: -48px;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+  
+.tooltip .tooltiptext::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    
+    border-width: 5px;
+    border-style: solid;
+    border-color: #555555 transparent transparent transparent;
+}
+  
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+    opacity: 1;
 }

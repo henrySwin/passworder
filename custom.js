@@ -44,6 +44,12 @@ function getLength() {
         otherLength.checked = false;
         document.getElementById("32Length").checked = true;
     }
+
+    // Enforce the maximum length of 4096.
+    if (inputOtherLength.value > 4096) {
+        inputOtherLength.value = 4096;
+        length = 4096;
+    }
     
     // Log password length. e.g. "Length: 32".
     console.info("Length: " + length);
@@ -143,7 +149,7 @@ function main() {
     const password = generatePassword(length, types);
     
     // Display the password in the <p> tag.
-    document.getElementById("result").innerHTML = password.toString();
+    document.getElementById("result").value = password;
 }
 
 
@@ -159,5 +165,14 @@ window.onload = function() {
     document.getElementById("symbols").addEventListener("change", smartSymbols);
 
     // If the "generate" Button is clicked, call main().
-    document.getElementById("generate").onclick = main;
+    document.getElementById("generate").addEventListener("click", main);
+
+    // If the "copy to clipboard" Button is clicked, then copy the password!
+    document.getElementById("clipboard").addEventListener("click",
+    function() {
+        var result = document.getElementById("result");
+        result.select();
+        result.setSelectionRange(0, 99999)
+        document.execCommand("copy");
+    });
 };

@@ -38,7 +38,7 @@ function getLength() {
         inputOtherLength.value = "";
 
     // Ensure that a length greater than 0 has been inputted by user.
-    if (inputOtherLength.value <= 0) {
+    if (inputOtherLength.value !== "" && inputOtherLength.value <= 0) {
         length = 32;
         inputOtherLength.value = "";
         otherLength.checked = false;

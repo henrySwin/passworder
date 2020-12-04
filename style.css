@@ -6,33 +6,50 @@ body {
     padding-left: 20px;
 }
 
+
 ul {
     list-style-type: none;
 }
 
+
 .TextBox {
     border-radius: 8px;
     border: none;
+    width: 75px;
 }
+
 
 .button {
     color: #000000;
     background-color: #FFFFFF;
-    border: 2px solid #FFFFFF;
+    border: none;
     
     font-size: 14px;
     padding: 10px 14px;
+    margin-right: 16px;
     cursor: pointer;
     border-radius: 8px;
 }
 
+/* Currently hovering over button. */
 .button:hover {
     background-color: #00FF00;
 }
 
+/* Currently clicking button. */
 .button:active {
-    background-color: #00E600;
+    background-color: #009900;
 }
+
+
+/* TextArea where the password is displayed. */
+.result {
+    color: #000000;
+    background-color: #FFFFFF;
+    border-radius: 8px;
+    border: none;
+}
+
 
 /* Link has not been clicked. */
 a:link {
@@ -51,5 +68,5 @@ a:hover {
 
 /* Currently clicking link. */
 a:active {
-    color: #00E600;
+    color: #009900;
 }

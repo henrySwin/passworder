@@ -1,5 +1,7 @@
 # passworder ![passworder logo](favicon.ico?raw=true)
 
+Click here to use: https://bit.ly/3lSJxvl
+
 Webpage to create strong passwords without any security fears.
 
 Final release version contains no hyperlinks to any external sources, and is contained within the one file.

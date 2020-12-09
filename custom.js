@@ -88,16 +88,14 @@ function getTypes() {
 }
 
 
+/* Generate a random single-digit number. 0-(max - 1). */
+function generateNumber(max) { return Math.floor(Math.random()*max); }
+
+
 /* Generate a random lowercase letter. */
 function generateLetter() {
     const alphabet = "abcdefghijklmnopqrstuvwxyz"; // 26 letters.
-    return alphabet[Math.floor(Math.random() * alphabet.length)]; // 0-25.
-}
-
-
-/* Generate a random single-digit number. */
-function generateNumber() {
-    return Math.floor(Math.random() * 10); // 0-9.
+    return alphabet[generateNumber(alphabet.length)]; // 0-25.
 }
 
 
@@ -110,14 +108,13 @@ function generateSymbol(aTypes) {
     if (aTypes[5]) symbols += "."; // Include .
 
     // Choose a random symbol from the assembled list.
-    return symbols[Math.floor(Math.random() * symbols.length)]; // 0-23/24/25.
+    return symbols[generateNumber(symbols.length)]; // 0-23/24/25.
 }
 
 
 /* Check if the password has at least one of each desired type. */
 function isPerfect(aPassword, aTypes) {
-    if (
-        (aTypes[0] && !aPassword.match(/[a-z]/)) ||
+    if ( (aTypes[0] && !aPassword.match(/[a-z]/)) ||
         (aTypes[1] && !aPassword.match(/[A-Z]/)) ||
         (aTypes[2] && !aPassword.match(/[0-9]/)) ||
         (aTypes[3] && !aPassword.match(/[^a-zA-Z0-9]/))
@@ -128,13 +125,14 @@ function isPerfect(aPassword, aTypes) {
 
 /* Replace one character at a random position. */
 function replaceChar(aLength, p, charType, aTypes) {
-    const c = Math.floor(Math.random() * aLength); // 0-(aLength - 1).
+    const c = generateNumber(aLength); // 0-(aLength - 1).
+
     if (charType === "lowercase")
         p=p.substring(0,c)+generateLetter()+p.substring(c+1);
     else if (charType === "UPPERCASE")
         p=p.substring(0,c)+generateLetter().toUpperCase()+p.substring(c+1);
     else if (charType === "numb3rs")
-        p=p.substring(0,c)+generateNumber()+p.substring(c+1);
+        p=p.substring(0,c)+generateNumber(10)+p.substring(c+1);
     else if (charType === "$ymbol$")
         p=p.substring(0,c)+generateSymbol(aTypes)+p.substring(c+1);
 
@@ -143,20 +141,16 @@ function replaceChar(aLength, p, charType, aTypes) {
 
 
 /* Ensure the password has at least 1 of each desired character type. */
-function validatePassword(aPassword, aLength, aTypes) {
-    if (aTypes[0] && !aPassword.match(/[a-z]/))
-        aPassword = replaceChar(aLength, aPassword, "lowercase", aTypes);
+function validatePassword(p, aLength, aTypes) {
+    var type = "";
 
-    if (aTypes[1] && !aPassword.match(/[A-Z]/))
-        aPassword = replaceChar(aLength, aPassword, "UPPERCASE", aTypes);
-      
-    if (aTypes[2] && !aPassword.match(/[0-9]/))
-        aPassword = replaceChar(aLength, aPassword, "numb3rs", aTypes);
+    if (aTypes[0] && !p.match(/[a-z]/)) type = "lowercase";
+    else if (aTypes[1] && !p.match(/[A-Z]/)) type = "UPPERCASE";
+    else if (aTypes[2] && !p.match(/[0-9]/)) type = "numb3rs";
+    else if (aTypes[3] && !p.match(/[^a-zA-Z0-9]/)) type = "$ymbol$";
 
-    if (aTypes[3] && !aPassword.match(/[^a-zA-Z0-9]/))
-        aPassword = replaceChar(aLength, aPassword, "$ymbol$", aTypes);
-
-    return aPassword;
+    p = replaceChar(aLength, p, type, aTypes);
+    return p;
 }
 
 
@@ -167,14 +161,14 @@ function generatePassword(aLength, aTypes) {
     for (var i = 0; i < aLength; i++) {
         // Loop until a desired character type is chosen.
         var type = 0;
-        do type = Math.floor(Math.random() * 4); // 0-3.
+        do type = generateNumber(4); // 0-3.
         while (!aTypes[type]); // Checkbox was not selected (false).
 
         var character = "";
         
         if (type === 0) character = generateLetter();
         else if (type === 1) character = generateLetter().toUpperCase();
-        else if (type === 2) character = generateNumber();
+        else if (type === 2) character = generateNumber(10); // 0-9.
         else if (type === 3) character = generateSymbol(aTypes);
 
         password += character;

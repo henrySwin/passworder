@@ -192,8 +192,6 @@ function generatePassword(aLength, aTypes) {
 /* Called by the "generate" Button. */
 function main() {
     const length = getLength();
-    // Having @ and . in types[] is poor design.
-    // Should have a separate [] for desired symbols.
     const types = getTypes();
     const password = generatePassword(length, types);
     

@@ -90,8 +90,14 @@ function getTypes() {
 
 /* Generate a random lowercase letter. */
 function generateLetter() {
-    const alphabet = "abcdefghijklmnopqrstuvwxyz";
-    return alphabet[Math.floor(Math.random() * alphabet.length)]; // 0-26.
+    const alphabet = "abcdefghijklmnopqrstuvwxyz"; // 26 letters.
+    return alphabet[Math.floor(Math.random() * alphabet.length)]; // 0-25.
+}
+
+
+/* Generate a random single-digit number. */
+function generateNumber() {
+    return Math.floor(Math.random() * 10); // 0-9.
 }
 
 
@@ -99,12 +105,67 @@ function generateLetter() {
 function generateSymbol(aTypes) {
     // Assemble the list of symbols the user selected.
     // ` @ \ " ' < > . are not included in the default list.
-    var symbols = "~!#$%^&*()_-+={[}]|:;,?/";
+    var symbols = "~!#$%^&*()_-+={[}]|:;,?/"; // 24 symbols.
     if (aTypes[4]) symbols += "@"; // Include @
     if (aTypes[5]) symbols += "."; // Include .
 
     // Choose a random symbol from the assembled list.
-    return symbols[Math.floor(Math.random() * symbols.length)]; // 0-24/25/26.
+    return symbols[Math.floor(Math.random() * symbols.length)]; // 0-23/24/25.
+}
+
+
+/* Check if the password has at least one of each desired type. */
+function isPerfect(aPassword, aTypes) {
+    if (
+        (aTypes[0] && !aPassword.match(/[a-z]/)) ||
+        (aTypes[1] && !aPassword.match(/[A-Z]/)) ||
+        (aTypes[2] && !aPassword.match(/[0-9]/)) ||
+        (aTypes[3] && !aPassword.match(/[^a-zA-Z0-9]/))
+        ) return false;
+    else return true;
+}
+
+
+/* Ensure the password has at least 1 of each desired character type. */
+function validatePassword(aPassword, aLength, aTypes) {
+    var index = 0;
+    // Wanted a lowercase, but didn't get one:
+    if (aTypes[0] && !aPassword.match(/[a-z]/)) {
+        index = Math.floor(Math.random() * aLength); // 0-(aLength - 1).
+        aPassword = aPassword.substring(0,index) + generateLetter() + aPassword.substring(index + 1);
+        
+        console.log("Put a lowercase at index: " + index);
+        console.log("Transformed password: " + aPassword);
+    }
+
+    // Wanted an UPPERCASE, but didn't get one:
+    if (aTypes[1] && !aPassword.match(/[A-Z]/)) {
+        index = Math.floor(Math.random() * aLength);
+        aPassword = aPassword.substring(0,index) + generateLetter().toUpperCase() + aPassword.substring(index + 1);
+        
+        console.log("Put an UPPERCASE at index: " + index);
+        console.log("Transformed password: " + aPassword);
+    }
+    
+    // Wanted a numb3r, but didn't get one:
+    if (aTypes[2] && !aPassword.match(/[0-9]/)) {
+        index = Math.floor(Math.random() * aLength);
+        aPassword = aPassword.substring(0,index) + generateNumber() + aPassword.substring(index + 1);
+        
+        console.log("Put a numb3r at index: " + index);
+        console.log("Transformed password: " + aPassword);
+    }
+
+    // Wanted a $ymbol, but didn't get one:
+    if (aTypes[3] && !aPassword.match(/[^a-zA-Z0-9]/)) {
+        index = Math.floor(Math.random() * aLength);
+        aPassword = aPassword.substring(0,index) + generateSymbol(aTypes) + aPassword.substring(index + 1);
+        
+        console.log("Put a $ymbol at index: " + index);
+        console.log("Transformed password: " + aPassword);
+    }
+
+    return aPassword;
 }
 
 
@@ -125,13 +186,22 @@ function generatePassword(aLength, aTypes) {
         
         if (type === 0) character = generateLetter();
         else if (type === 1) character = generateLetter().toUpperCase();
-        else if (type === 2) character = Math.floor(Math.random() * 10); // 0-9.
+        else if (type === 2) character = generateNumber();
         else character = generateSymbol(aTypes);
 
         password += character;
     }
 
-    console.log("Password: " + password); // Log the password.
+    console.log("Unvalidated password: " + password);
+
+    // Call validatePassword() until isPerfect() returns true.
+    while (!isPerfect(password, aTypes))
+        password = validatePassword(password, aLength, aTypes);
+
+    // Issue 1: stats[] is not updated by validatePassword.
+    // Issue 2: validatePassword() might be busted if there are more desired types than length.
+
+    console.log("Validated password:   " + password); // Log the password.
     // Log the frequency of each character type.
     console.log("Password stats: " +
     "lowercase: " + stats[0] + ", UPPERCASE: " + stats[1] +

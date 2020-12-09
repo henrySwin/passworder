@@ -219,7 +219,7 @@ window.onload = function() {
     function() {
         var result = document.getElementById("result");
         result.select();
-        result.setSelectionRange(0, 99999)
+        result.setSelectionRange(0, 99999);
         document.execCommand("copy");
 
         var tooltip = document.getElementById("myTooltip");

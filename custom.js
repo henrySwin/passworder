@@ -50,9 +50,7 @@ function getLength() {
         inputOtherLength.value = 4096;
         length = 4096;
     }
-    
-    // Log password length. e.g. "Length: 32".
-    console.info("Length: " + length);
+
     return length;
 }
 
@@ -77,8 +75,8 @@ function getTypes() {
     const checkboxes = ["lowercase","uppercase",
     "numbers","symbols","symbol_at","symbol_dot"];
 
-    for (var i = 0; i < types.length; i++)
-        types[i] = document.getElementById(checkboxes[i]).checked;
+    for (var j = 0; j < types.length; j++)
+        types[j] = document.getElementById(checkboxes[j]).checked;
 
     // Ensure that some characters have been selected for generation.
     // If no CheckBoxes have been selected, expression === 0.
@@ -158,7 +156,7 @@ function validatePassword(p, aLength, aTypes) {
 function generatePassword(aLength, aTypes) {
     var password = "";
 
-    for (var i = 0; i < aLength; i++) {
+    for (var k = 0; k < aLength; k++) {
         // Loop until a desired character type is chosen.
         var type = 0;
         do type = generateNumber(4); // 0-3.
@@ -176,12 +174,10 @@ function generatePassword(aLength, aTypes) {
 
     var charTypes = new Array(4); // Remove @ and . from array.
     var variety = 0;
-    for (var z = 0; z < 4; z++) {
-        charTypes[z] = aTypes[z];
-        if (charTypes[z]) variety++;
+    for (var l = 0; l < 4; l++) {
+        charTypes[l] = aTypes[l];
+        if (charTypes[l]) variety++;
     }
-
-    console.log("Unvalidated password: " + password);
 
     // If password length is longer than amount of character types (normal)...
     if (aLength >= variety)
@@ -189,15 +185,12 @@ function generatePassword(aLength, aTypes) {
         while (!isPerfect(password, charTypes))
             password = validatePassword(password, aLength, charTypes);
 
-    console.log("Validated password:   " + password); // Log the password.
     return password;
 }
 
 
 /* Called by the "generate" Button. */
 function main() {
-    console.clear(); // Clear the console (removes logs from previous password).
-
     const length = getLength();
     // Having @ and . in types[] is poor design.
     // Should have a separate [] for desired symbols.

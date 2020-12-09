@@ -8,7 +8,6 @@ Final release version contains no hyperlinks to any external sources, and is con
 
 
 ## development roadmap ![passworder logo](favicon.ico?raw=true)
-- Create option to generate at least 1 of each character type (to meet a website's requirements)
 - jQuery version of JavaScript code
 - HTML release version with embedded CSS + JS, and no external links (favicon, font, GitHub)
 

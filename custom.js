@@ -126,44 +126,35 @@ function isPerfect(aPassword, aTypes) {
 }
 
 
+/* Replace one character at a random position. */
+function replaceChar(aLength, p, charType, aTypes) {
+    const c = Math.floor(Math.random() * aLength); // 0-(aLength - 1).
+    if (charType === "lowercase")
+        p=p.substring(0,c)+generateLetter()+p.substring(c+1);
+    else if (charType === "UPPERCASE")
+        p=p.substring(0,c)+generateLetter().toUpperCase()+p.substring(c+1);
+    else if (charType === "numb3rs")
+        p=p.substring(0,c)+generateNumber()+p.substring(c+1);
+    else if (charType === "$ymbol$")
+        p=p.substring(0,c)+generateSymbol(aTypes)+p.substring(c+1);
+
+    return p;
+}
+
+
 /* Ensure the password has at least 1 of each desired character type. */
 function validatePassword(aPassword, aLength, aTypes) {
-    var index = 0;
-    // Wanted a lowercase, but didn't get one:
-    if (aTypes[0] && !aPassword.match(/[a-z]/)) {
-        index = Math.floor(Math.random() * aLength); // 0-(aLength - 1).
-        aPassword = aPassword.substring(0,index) + generateLetter() + aPassword.substring(index + 1);
-        
-        console.log("Put a lowercase at index: " + index);
-        console.log("Transformed password: " + aPassword);
-    }
+    if (aTypes[0] && !aPassword.match(/[a-z]/))
+        aPassword = replaceChar(aLength, aPassword, "lowercase", aTypes);
 
-    // Wanted an UPPERCASE, but didn't get one:
-    if (aTypes[1] && !aPassword.match(/[A-Z]/)) {
-        index = Math.floor(Math.random() * aLength);
-        aPassword = aPassword.substring(0,index) + generateLetter().toUpperCase() + aPassword.substring(index + 1);
-        
-        console.log("Put an UPPERCASE at index: " + index);
-        console.log("Transformed password: " + aPassword);
-    }
-    
-    // Wanted a numb3r, but didn't get one:
-    if (aTypes[2] && !aPassword.match(/[0-9]/)) {
-        index = Math.floor(Math.random() * aLength);
-        aPassword = aPassword.substring(0,index) + generateNumber() + aPassword.substring(index + 1);
-        
-        console.log("Put a numb3r at index: " + index);
-        console.log("Transformed password: " + aPassword);
-    }
+    if (aTypes[1] && !aPassword.match(/[A-Z]/))
+        aPassword = replaceChar(aLength, aPassword, "UPPERCASE", aTypes);
+      
+    if (aTypes[2] && !aPassword.match(/[0-9]/))
+        aPassword = replaceChar(aLength, aPassword, "numb3rs", aTypes);
 
-    // Wanted a $ymbol, but didn't get one:
-    if (aTypes[3] && !aPassword.match(/[^a-zA-Z0-9]/)) {
-        index = Math.floor(Math.random() * aLength);
-        aPassword = aPassword.substring(0,index) + generateSymbol(aTypes) + aPassword.substring(index + 1);
-        
-        console.log("Put a $ymbol at index: " + index);
-        console.log("Transformed password: " + aPassword);
-    }
+    if (aTypes[3] && !aPassword.match(/[^a-zA-Z0-9]/))
+        aPassword = replaceChar(aLength, aPassword, "$ymbol$", aTypes);
 
     return aPassword;
 }
@@ -172,27 +163,24 @@ function validatePassword(aPassword, aLength, aTypes) {
 /* Generate the password itself (a string). */
 function generatePassword(aLength, aTypes) {
     var password = "";
-    var stats = [0,0,0,0];
 
     for (var i = 0; i < aLength; i++) {
         // Loop until a desired character type is chosen.
         var type = 0;
         do type = Math.floor(Math.random() * 4); // 0-3.
         while (!aTypes[type]); // Checkbox was not selected (false).
-        
-        stats[type] += 1; // Increment the stats array for the chosen type.
 
         var character = "";
         
         if (type === 0) character = generateLetter();
         else if (type === 1) character = generateLetter().toUpperCase();
         else if (type === 2) character = generateNumber();
-        else character = generateSymbol(aTypes);
+        else if (type === 3) character = generateSymbol(aTypes);
 
         password += character;
     }
 
-    var charTypes = new Array(4);
+    var charTypes = new Array(4); // Remove @ and . from array.
     var variety = 0;
     for (var z = 0; z < 4; z++) {
         charTypes[z] = aTypes[z];
@@ -207,13 +195,7 @@ function generatePassword(aLength, aTypes) {
         while (!isPerfect(password, charTypes))
             password = validatePassword(password, aLength, charTypes);
 
-    // Issue 1: stats[] is not updated by validatePassword.
-
     console.log("Validated password:   " + password); // Log the password.
-    // Log the frequency of each character type.
-    console.log("Password stats: " +
-    "lowercase: " + stats[0] + ", UPPERCASE: " + stats[1] +
-    ", numb3rs: " + stats[2] +   ", $ymbol$: " + stats[3]);
     return password;
 }
 

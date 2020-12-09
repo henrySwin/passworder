@@ -192,14 +192,22 @@ function generatePassword(aLength, aTypes) {
         password += character;
     }
 
+    var charTypes = new Array(4);
+    var variety = 0;
+    for (var z = 0; z < 4; z++) {
+        charTypes[z] = aTypes[z];
+        if (charTypes[z]) variety++;
+    }
+
     console.log("Unvalidated password: " + password);
 
-    // Call validatePassword() until isPerfect() returns true.
-    while (!isPerfect(password, aTypes))
-        password = validatePassword(password, aLength, aTypes);
+    // If password length is longer than amount of character types (normal)...
+    if (aLength >= variety)
+        // ...Call validatePassword() until isPerfect() returns true.
+        while (!isPerfect(password, charTypes))
+            password = validatePassword(password, aLength, charTypes);
 
     // Issue 1: stats[] is not updated by validatePassword.
-    // Issue 2: validatePassword() might be busted if there are more desired types than length.
 
     console.log("Validated password:   " + password); // Log the password.
     // Log the frequency of each character type.
@@ -215,6 +223,8 @@ function main() {
     console.clear(); // Clear the console (removes logs from previous password).
 
     const length = getLength();
+    // Having @ and . in types[] is poor design.
+    // Should have a separate [] for desired symbols.
     const types = getTypes();
     const password = generatePassword(length, types);
     

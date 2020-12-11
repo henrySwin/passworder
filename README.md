@@ -10,6 +10,7 @@ Final release version contains no hyperlinks to any external sources, and is con
 ## development roadmap ![passworder logo](favicon.ico?raw=true)
 - jQuery version of JavaScript code
 - Host release version on GitHub pages
+- Add License
 
 
 ## how to use GitHub with Visual Studio Code ![passworder logo](favicon.ico?raw=true)

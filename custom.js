@@ -216,14 +216,12 @@ window.onload = function() {
 
     // If the "copy to clipboard" Button is clicked, then copy the password!
     document.getElementById("clipboard").addEventListener("click",
-    function() {
-        var result = document.getElementById("result");
-        result.select();
-        result.setSelectionRange(0, 99999);
+    function() {        
+        document.getElementById("result").select();
+        // Select 4096 characters (max length).
+        document.getElementById("result").setSelectionRange(0, 4096);
         document.execCommand("copy");
-
-        var tooltip = document.getElementById("myTooltip");
-        tooltip.innerHTML = "copied!";
+        document.getElementById("myTooltip").innerHTML = "copied!";
     });
 
     document.getElementById("clipboard").addEventListener("mouseout",

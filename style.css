@@ -18,7 +18,7 @@ ul {
 }
 
 /* Generate and Copy to Clipboard buttons. */
-.button {
+button {
     color: #000000;
     background-color: #FFFFFF;
     
@@ -32,17 +32,17 @@ ul {
 }
 
 /* Currently hovering over button. */
-.button:hover {
+button:hover {
     background-color: #00FF00;
 }
 
 /* Currently clicking button. */
-.button:active {
+button:active {
     background-color: #009900;
 }
 
 /* TextArea where the password is displayed. */
-#result {
+textarea {
     color: #000000;
     background-color: #FFFFFF;
 

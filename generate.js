@@ -84,9 +84,10 @@ function getTypes() {
 function generateNumber(max) { return Math.floor(Math.random()*max); }
 
 
-/* Generate a random lowercase letter. */
+/* Generate a random lowercase letter.
+    'I' and 'L' are not included, as they look too similar. */
 function generateLetter() {
-    const alphabet = "abcdefghijklmnopqrstuvwxyz"; // 26 letters.
+    const alphabet = "abcdefghjkmnopqrstuvwxyz"; // 26 letters.
     return alphabet[generateNumber(alphabet.length)]; // 0-25.
 }
 

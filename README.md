@@ -11,6 +11,7 @@ Final release version contains no hyperlinks to any external sources, and is con
 - jQuery version of JavaScript code
 - Host release version on GitHub pages
 - Add License
+- Separate lowercase and uppercase letter generate functions. This would allow 'i' and 'L' to remain, while removing 'I' and 'l'.
 
 
 ## how to use GitHub with Visual Studio Code ![passworder logo](favicon.ico?raw=true)

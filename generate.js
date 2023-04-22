@@ -23,22 +23,24 @@ function smartSymbols() {
 
 /* Retrieve the user-inputted password length. */
 function getLength() {
-    var length = 32;
-    // Constants to refer to these elements because they're long.
+    var length = 64;
     const otherLength = document.getElementById("otherLength");
     const inputOtherLength = document.getElementById("inputOtherLength");
 
-    if (document.getElementById("16Length").checked) length = 16;
-    else if (document.getElementById("20Length").checked) length = 20;
-    else if (document.getElementById("32Length").checked) length = 32;
+    if (document.getElementById("40Length").checked) length = 40;
+    else if (document.getElementById("64Length").checked) length = 64;
+    else if (document.getElementById("128Length").checked) length = 128;
+    else if (document.getElementById("255Length").checked) length = 255;
+    else if (document.getElementById("256Length").checked) length = 256;
+    else if (document.getElementById("512Length").checked) length = 512;
     else if (otherLength.checked && inputOtherLength.value !== "" &&
             inputOtherLength.value <= 4096 && inputOtherLength.value >= 1) {
                 length = inputOtherLength.value; }
     else {
         otherLength.checked = false;
         inputOtherLength.value = "";
-        document.getElementById("32Length").checked = true;
-        length = 32; // Reset to 32 by default.
+        document.getElementById("64Length").checked = true;
+        length = 64; // Reset to 64 by default.
     }
 
     // Clear TextBox if otherLength is not selected.
@@ -50,33 +52,47 @@ function getLength() {
 
 
 /* Fix for if the user selected no character types. */
-function fixTypes(aTypes, aCheckboxes) {
+function fixTypes(char_types, checkbox_names) {
     // Re-enable the @ and . CheckBoxes.
     document.getElementById("symbol_at").disabled = false;
     document.getElementById("symbol_dot").disabled = false;
 
-    for (var i = 0; i < 4; i++) {
-        aTypes[i] = true;
-        document.getElementById(aCheckboxes[i]).checked = true;
+    for (let box = 0; box < checkbox_names.length; box++) {
+        char_types[box] = true;
+        document.getElementById(checkbox_names[box]).checked = true;
     }
-    return aTypes;
+    return char_types;
 }
 
 
 /* Retrieve the desired character types. */
 function getTypes() {
-    var types = new Array(6);
-    const checkboxes = ["lowercase","uppercase",
-    "numbers","symbols","symbol_at","symbol_dot"];
+    const checkbox_names = [
+        "lowercase",
+        "uppercase",
+        "numbers",
+        "protonmail_symbols",
+        "symbols",
+        "symbol_at",
+        "symbol_dot",
+    ];
 
-    for (var j = 0; j < types.length; j++)
-        types[j] = document.getElementById(checkboxes[j]).checked;
+    // Boolean array which will know which checkboxes have been checked.
+    let char_types = new Array(7);
+
+    // Tell char_types array which checkboxes have been checked.
+    for (let box = 0; box < checkbox_names.length; box++) {
+        char_types[box] = document.getElementById(checkbox_names[box]).checked;
+    }
 
     // Ensure that some characters have been selected for generation.
-    // If no CheckBoxes have been selected, expression === 0.
-    if (types[0] + types[1] + types[2] + types[3] === 0)
-        types = fixTypes(types, checkboxes);
-    return types;
+    if (char_types.some((x) => x === true)) { // There is at least 1 "true" in array.
+        return char_types;
+    }
+    else {
+        char_types = fixTypes(char_types, checkbox_names);
+        return char_types;
+    }
 }
 
 
@@ -85,7 +101,7 @@ function generateNumber(max) { return Math.floor(Math.random()*max); }
 
 
 /* Generate a random lowercase letter.
-    'I' and 'L' are not included, as they look too similar. */
+   'I' and 'L' are not included, as they look too similar. */
 function generateLetter() {
     const alphabet = "abcdefghjkmnopqrstuvwxyz"; // 26 letters.
     return alphabet[generateNumber(alphabet.length)]; // 0-25.
@@ -93,92 +109,103 @@ function generateLetter() {
 
 
 /* Generate a random symbol. */
-function generateSymbol(aTypes) {
+function generateSymbol(char_types) {
     // Assemble the list of symbols the user selected.
     // ` @ \ " ' < > . are not included in the default list.
     var symbols = "~!#$%^&*()_-+={[}]|:;,?/"; // 24 symbols.
-    if (aTypes[4]) symbols += "@"; // Include @
-    if (aTypes[5]) symbols += "."; // Include .
+    if (char_types[5]) symbols += "@"; // Include @
+    if (char_types[6]) symbols += "."; // Include .
 
     // Choose a random symbol from the assembled list.
     return symbols[generateNumber(symbols.length)]; // 0-23/24/25.
 }
 
 
-/* Check if the password has at least one of each desired type. */
-function isPerfect(aPassword, aTypes) {
-    if ( (aTypes[0] && !aPassword.match(/[a-z]/)) ||
-        (aTypes[1] && !aPassword.match(/[A-Z]/)) ||
-        (aTypes[2] && !aPassword.match(/[0-9]/)) ||
-        (aTypes[3] && !aPassword.match(/[^a-zA-Z0-9]/))
-        ) return false;
-    else return true;
+/* Generate a random ProtonMail email symbol. */
+function generateProtonSymbol() {
+    // Assemble the list of symbols that ProtonMail emails can use.
+    var symbols = "._-"; // 3 symbols.
+
+    // Choose a random symbol from the assembled list.
+    return symbols[generateNumber(symbols.length)]; // 0-3.
 }
 
 
-/* Replace one character at a random position. */
-function replaceChar(aLength, p, charType, aTypes) {
-    const c = generateNumber(aLength); // 0-(aLength - 1).
-
-    if (charType === "lowercase")
-        p=p.substring(0,c)+generateLetter()+p.substring(c+1);
-    else if (charType === "UPPERCASE")
-        p=p.substring(0,c)+generateLetter().toUpperCase()+p.substring(c+1);
-    else if (charType === "numb3rs")
-        p=p.substring(0,c)+generateNumber(10)+p.substring(c+1);
-    else if (charType === "$ymbol$")
-        p=p.substring(0,c)+generateSymbol(aTypes)+p.substring(c+1);
-
-    return p;
+/* Check if the password has at least one of each desired type. */
+function isPerfect(password, char_types) {
+    if ( (char_types[0] && !password.match(/[a-z]/)) ||
+        (char_types[1] && !password.match(/[A-Z]/)) ||
+        (char_types[2] && !password.match(/[0-9]/)) ||
+        (char_types[3] && !password.match(/[\.\_\-]/)) ||
+        (char_types[4] && !password.match(/[^a-zA-Z0-9]/)))
+    {
+        return false;
+    } 
+    else {
+        return true;
+    }
 }
 
 
 /* Ensure the password has at least 1 of each desired character type. */
-function validatePassword(p, aLength, aTypes) {
-    var type = "";
+function validatePassword(p, length, char_types) {
+    const pos = generateNumber(length);
+    
+    // If there are no characters of that type in the whole password,
+    // then replace one character at a random position.
+    if (char_types[0] && !p.match(/[a-z]/)) {
+        p=p.substring(0,pos)+generateLetter()+p.substring(pos+1);
+    }
+    else if (char_types[1] && !p.match(/[A-Z]/)) {
+        p=p.substring(0,pos)+generateLetter().toUpperCase()+p.substring(pos+1);
+    }
+    else if (char_types[2] && !p.match(/[0-9]/)) {
+        p=p.substring(0,pos)+generateNumber(10)+p.substring(pos+1);
+    }
+    else if (char_types[3] && !p.match(/[\.\_\-]/)) {
+        p=p.substring(0,pos)+generateProtonSymbol()+p.substring(pos+1);
+    }
+    else if (char_types[4] && !p.match(/[^a-zA-Z0-9]/)) {
+        p=p.substring(0,pos)+generateSymbol(aTypes)+p.substring(pos+1);
+    }
 
-    if (aTypes[0] && !p.match(/[a-z]/)) type = "lowercase";
-    else if (aTypes[1] && !p.match(/[A-Z]/)) type = "UPPERCASE";
-    else if (aTypes[2] && !p.match(/[0-9]/)) type = "numb3rs";
-    else if (aTypes[3] && !p.match(/[^a-zA-Z0-9]/)) type = "$ymbol$";
-
-    p = replaceChar(aLength, p, type, aTypes);
     return p;
 }
 
 
 /* Generate the password itself (a string). */
-function generatePassword(aLength, aTypes) {
+function generatePassword(length, char_types) {
     var password = "";
 
-    for (var k = 0; k < aLength; k++) {
+    for (var k = 0; k < length; k++) {
         // Loop until a desired character type is chosen.
-        var type = 0;
-        do type = generateNumber(4); // 0-3.
-        while (!aTypes[type]); // Checkbox was not selected (false).
+        var char_type = 0;
+        do char_type = generateNumber(5); // 0-4 (5 values).
+        while (!char_types[char_type]); // Checkbox was not selected (false).
 
         var character = "";
         
-        if (type === 0) character = generateLetter();
-        else if (type === 1) character = generateLetter().toUpperCase();
-        else if (type === 2) character = generateNumber(10); // 0-9.
-        else if (type === 3) character = generateSymbol(aTypes);
+        if (char_type === 0) character = generateLetter();
+        else if (char_type === 1) character = generateLetter().toUpperCase();
+        else if (char_type === 2) character = generateNumber(10); // 0-9.
+        else if (char_type === 3) character = generateProtonSymbol();
+        else if (char_type === 4) character = generateSymbol(char_types);
 
         password += character;
     }
-
-    var charTypes = new Array(4); // Remove @ and . from array.
+    
     var variety = 0;
-    for (var l = 0; l < 4; l++) {
-        charTypes[l] = aTypes[l];
-        if (charTypes[l]) variety++;
+    for (let l = 0; l < 5; l++) {
+        if (char_types[l]) variety++;
     }
 
     // If password length is longer than amount of character types (normal)...
-    if (aLength >= variety)
+    if (length >= variety) {
         // ...Call validatePassword() until isPerfect() returns true.
-        while (!isPerfect(password, charTypes))
-            password = validatePassword(password, aLength, charTypes);
+        while (!isPerfect(password, char_types)) {
+            password = validatePassword(password, length, char_types);
+        }
+    }
 
     return password;
 }
@@ -186,9 +213,9 @@ function generatePassword(aLength, aTypes) {
 
 /* Called by the "generate" Button. */
 function main() {
-    const length = getLength();
-    const types = getTypes();
-    const password = generatePassword(length, types);
+    const length = getLength(); // Integer from 1 to 4096.
+    const char_types = getTypes(); // Boolean array which knows which checkboxes have been checked.
+    const password = generatePassword(length, char_types);
     
     // Display the password in the <p> tag.
     document.getElementById("result").value = password;

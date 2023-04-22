@@ -217,8 +217,25 @@ function main() {
     const char_types = getTypes(); // Boolean array which knows which checkboxes have been checked.
     const password = generatePassword(length, char_types);
     
-    // Display the password in the <p> tag.
+    // Display the password in the <textarea> tag.
     document.getElementById("result").value = password;
+}
+
+
+/* Called by the "test string" Button. */
+function stringTest() {
+    const input = document.getElementById("string_test").value;
+    const string_length = input.length;
+
+    // Display the password in the <p> tag.
+    document.getElementById("string_test_result").innerHTML = "Result: " + string_length.toString();
+}
+
+
+/* Called by the "reset test" Button. */
+function resetStringTest() {
+    document.getElementById("string_test").value = "";
+    document.getElementById("string_test_result").innerHTML = "Result:";
 }
 
 
@@ -235,6 +252,12 @@ window.onload = function() {
 
     // If the "generate" Button is clicked, call main().
     document.getElementById("generate").addEventListener("click", main);
+
+    // If the "test" Button is clicked, call stringTest().
+    document.getElementById("string_test_button").addEventListener("click", stringTest);
+
+    // If the "reset" Button is clicked, call resetStringTest().
+    document.getElementById("string_test_reset_button").addEventListener("click", resetStringTest);
 
     // If the "copy to clipboard" Button is clicked, then copy the password!
     document.getElementById("clipboard").addEventListener("click",

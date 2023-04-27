@@ -227,7 +227,6 @@ function stringTest() {
     const input = document.getElementById("string_test").value;
     const string_length = input.length;
 
-    // Display the password in the <p> tag.
     document.getElementById("string_test_result").innerHTML = "Result: " + string_length.toString();
 }
 
@@ -236,6 +235,28 @@ function stringTest() {
 function resetStringTest() {
     document.getElementById("string_test").value = "";
     document.getElementById("string_test_result").innerHTML = "Result:";
+}
+
+
+/* Called by the "test similar string" Button. */
+function stringSimilarTest() {
+    const input1 = document.getElementById("string_similar_1").value;
+    const input2 = document.getElementById("string_similar_2").value;
+    
+    if (input1 === input2) {
+        document.getElementById("string_similarity_test_result").innerHTML = "Result: EQUAL";
+    }
+    else {
+        document.getElementById("string_similarity_test_result").innerHTML = "Result: NOT EQUAL";
+    }
+}
+
+
+/* Called by the "reset similarity test" Button. */
+function resetStringSimilarTest() {
+    document.getElementById("string_similar_1").value = "";
+    document.getElementById("string_similar_2").value = "";
+    document.getElementById("string_similarity_test_result").innerHTML = "Result:";
 }
 
 
@@ -258,6 +279,12 @@ window.onload = function() {
 
     // If the "reset" Button is clicked, call resetStringTest().
     document.getElementById("string_test_reset_button").addEventListener("click", resetStringTest);
+
+    // If the "test similar" Button is clicked, call stringSimilarTest().
+    document.getElementById("string_test_similarity_button").addEventListener("click", stringSimilarTest);
+
+    // If the "reset similar" Button is clicked, call resetStringSimilarTest().
+    document.getElementById("string_test_similarity_reset_button").addEventListener("click", resetStringSimilarTest);
 
     // If the "copy to clipboard" Button is clicked, then copy the password!
     document.getElementById("clipboard").addEventListener("click",
